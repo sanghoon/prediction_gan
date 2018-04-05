@@ -21,7 +21,7 @@ class PredictionModule(nn.Module):
         for k, p in self.module.named_parameters():
             p.requires_grad = False
 
-    def update_copy(self, step=2.0):
+    def step(self, step=2.0):
         new_copy = dict(self._org_model.named_parameters())
         my_state = dict(self.module.named_parameters())
 

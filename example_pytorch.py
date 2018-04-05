@@ -274,7 +274,7 @@ for epoch in range(opt.niter):
         optimizerG.step()
 
         if opt.pred:
-            netG_prime.update_copy(step=2.0)
+            netG_prime.step(step=2.0)
             pass
 
         print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f D(x): %.4f D(G(z)): %.4f / %.4f'

@@ -46,14 +46,14 @@ def test_prediction():
 
     pred = PredictionModule(net)
 
-    pred.update_copy()
+    pred.step()
 
     # No changes yet
     assert (np.all(pred.module.fc.weight.data == net.fc.weight.data))
 
     net.fc.weight.data.fill_(2.0)           # Increase by 1.0
 
-    pred.update_copy()
+    pred.step()
 
     assert (np.all(pred.module.fc.weight.data == 3.0))      # Increased by 2 * 1.0
 
@@ -65,18 +65,18 @@ def test_bn():
     net = MockNet()
 
     net.bn.weight.data.fill_(1.0)
-    net.bn.running_mean.fill_(1.)
+    net.bn.running_mean.fill_(1.0)
 
     pred = PredictionModule(net)
 
     net.bn.weight.data.fill_(2.0)           # Increase weight by 1.0
     net.bn.running_mean.fill_(2.0)     # Increase running_mean by 1.0
 
-    pred.update_copy()
+    pred.step()
 
-    # Weight should change, but running_mean shouldn't
-    assert (np.all(pred.module.bn.weight.data == 3.0))
-    assert (np.all(pred.module.bn.running_mean == 1.0))
+    # Weights should be different, but running_means shouldn't
+    assert (np.all(pred.module.bn.weight.data != net.bn.weight.data))
+    assert (np.all(pred.module.bn.running_mean == net.bn.running_mean))
 
 
 def test_integrity():
@@ -90,19 +90,19 @@ def test_integrity():
     assert(np.all(net(input).data.numpy() == pred(input).data.numpy()))
 
     # No changes
-    pred.update_copy(step=1.0)
+    pred.step(step=1.0)
 
     assert (np.all(net(input).data.numpy() == pred(input).data.numpy()))
 
     # New weights
     net.fc.weight.data.normal_(0.0, 1.0)
-    pred.update_copy(step=1.0)
-
+    pred.step(step=1.0)
+    
     assert (np.all(np.isclose(net(input).data.numpy(), pred(input).data.numpy())))
 
     # New weights
     net.fc.weight.data.normal_(0.0, 1.0)
-    pred.update_copy(step=2.0)
+    pred.step(step=2.0)
 
     assert (np.any(np.not_equal(net(input).data.numpy(), pred(input).data.numpy())))
 
