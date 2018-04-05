@@ -12,6 +12,7 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
+from modules import PredictionModule
 
 
 # Originally from https://github.com/pytorch/examples/blob/master/dcgan/main.py
@@ -35,6 +36,8 @@ parser.add_argument('--netG', default='', help="path to netG (to continue traini
 parser.add_argument('--netD', default='', help="path to netD (to continue training)")
 parser.add_argument('--outf', default='.', help='folder to output images and model checkpoints')
 parser.add_argument('--manualSeed', type=int, help='manual seed')
+parser.add_argument('--pred', default=False, action='store_true', help='enables G prediction')
+
 
 opt = parser.parse_args()
 print(opt)
@@ -203,6 +206,11 @@ if opt.cuda:
     input, label = input.cuda(), label.cuda()
     noise, fixed_noise = noise.cuda(), fixed_noise.cuda()
 
+if opt.pred:
+    print('Prediction of G is enabled (see https://openreview.net/forum?id=Skj8Kag0Z&noteId=rkLymJTSf)')
+    netG_prime = PredictionModule(netG)
+
+
 fixed_noise = Variable(fixed_noise)
 
 # setup optimizer
@@ -233,7 +241,14 @@ for epoch in range(opt.niter):
         # train with fake
         noise.resize_(batch_size, nz, 1, 1).normal_(0, 1)
         noisev = Variable(noise)
-        fake = netG(noisev)
+
+        if opt.pred:
+            # Get samples from netG_prime (G w/ prediction)
+            fake = netG_prime(noisev)
+        else:
+            # Directly generated from G
+            fake = netG(noisev)
+
         labelv = Variable(label.fill_(fake_label))
         output = netD(fake.detach())
         errD_fake = criterion(output, labelv)
@@ -247,11 +262,20 @@ for epoch in range(opt.niter):
         ###########################
         netG.zero_grad()
         labelv = Variable(label.fill_(real_label))  # fake labels are real for generator cost
+
+        if opt.pred:
+            # Generate fake samples from G (w/o prediction) for G training
+            fake = netG(noisev)
+
         output = netD(fake)
         errG = criterion(output, labelv)
         errG.backward()
         D_G_z2 = output.data.mean()
         optimizerG.step()
+
+        if opt.pred:
+            netG_prime.update_copy(step=2.0)
+            pass
 
         print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f D(x): %.4f D(G(z)): %.4f / %.4f'
               % (epoch, opt.niter, i, len(dataloader),
