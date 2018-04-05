@@ -25,15 +25,32 @@ class PredictionModule(nn.Module):
         new_copy = dict(self._org_model.named_parameters())
         my_state = dict(self.module.named_parameters())
 
-        for k, p in new_copy.items():
+        for k, src in new_copy.items():
             assert(k in self._last_copy.keys())
             assert(k in my_state.keys())
 
+            old = self._last_copy[k]
+            dst = my_state[k]
+
             # Update params. for inference
-            my_state[k].data[:] = step * (p.data[:] - self._last_copy[k].data[:]) + self._last_copy[k].data[:]
+            dst.data[:] = step * (src.data[:] - old.data[:]) + old.data[:]
 
             # Update params. to calculate delta
-            self._last_copy[k].data[:] = p.data[:]
+            old.data[:] = src.data[:]
+
+
+        # Copy other params. (TODO: better impl.?)
+        src_modules = list(self._org_model.modules())
+        dst_modules = list(self.module.modules())
+
+        for s, d in zip(src_modules, dst_modules):
+            assert(type(s) == type(d))
+
+            # Handle BN
+            if (isinstance(s, nn.BatchNorm1d) or isinstance(s, nn.BatchNorm2d) or isinstance(s, nn.BatchNorm3d)):
+                d.running_mean[:] = s.running_mean[:]
+                d.running_var[:] = s.running_var[:]
+
 
     def forward(self, x):
         return self.module(x)

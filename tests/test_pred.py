@@ -89,6 +89,11 @@ def test_integrity():
 
     assert(np.all(net(input).data.numpy() == pred(input).data.numpy()))
 
+    # No changes
+    pred.update_copy(step=1.0)
+
+    assert (np.all(net(input).data.numpy() == pred(input).data.numpy()))
+
     # New weights
     net.fc.weight.data.normal_(0.0, 1.0)
     pred.update_copy(step=1.0)
