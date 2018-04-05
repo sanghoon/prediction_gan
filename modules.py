@@ -16,21 +16,21 @@ class PredictionModule(nn.Module):
         self._last_copy = copy.deepcopy(dict(model.named_parameters()))
 
         for k, p in self._last_copy.items():
-            p.required_grad = False
+            p.requires_grad = False
 
         for k, p in self.module.named_parameters():
-            p.required_grad = False
+            p.requires_grad = False
 
-    def update_copy(self):
-        new_copy = self._org_model.named_parameters()
+    def update_copy(self, step=2.0):
+        new_copy = dict(self._org_model.named_parameters())
         my_state = dict(self.module.named_parameters())
 
-        for k, p in new_copy:
+        for k, p in new_copy.items():
             assert(k in self._last_copy.keys())
             assert(k in my_state.keys())
 
             # Update params. for inference
-            my_state[k].data[:] = (2 * p.data[:] - self._last_copy[k].data[:])      # P_new + (P_new - P_old)
+            my_state[k].data[:] = step * (p.data[:] - self._last_copy[k].data[:]) + self._last_copy[k].data[:]
 
             # Update params. to calculate delta
             self._last_copy[k].data[:] = p.data[:]
