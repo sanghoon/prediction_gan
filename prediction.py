@@ -5,7 +5,7 @@ import copy
 from contextlib import contextmanager
 
 # TODO: impl. w contextmanager
-class Prediction(optim.Optimizer):
+class PredOpt(optim.Optimizer):
     def __init__(self, params):
         super(optim.Optimizer, self).__init__()
 

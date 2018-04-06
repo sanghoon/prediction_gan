@@ -12,7 +12,7 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
-from modules import Prediction
+from prediction import PredOpt
 
 
 # Originally from https://github.com/pytorch/examples/blob/master/dcgan/main.py
@@ -214,7 +214,7 @@ optimizerG = optim.Adam(netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
 
 if opt.pred:
     print('Prediction of G is enabled (see https://openreview.net/forum?id=Skj8Kag0Z&noteId=rkLymJTSf)')
-    optimizer_pred = Prediction(netG.parameters())
+    optimizer_pred = PredOpt(netG.parameters())
 
 
 for epoch in range(opt.niter):

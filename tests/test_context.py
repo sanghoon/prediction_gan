@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
-from modules import Prediction
+from prediction import PredOpt
 import numpy as np
 
 
@@ -25,7 +25,7 @@ def test_lookahead():
     net.fc.weight.data.fill_(0.0)
     net.fc.bias.data.fill_(0.0)
 
-    pred = Prediction(net.parameters())
+    pred = PredOpt(net.parameters())
 
     # Update weights
     net.fc.weight.data.normal_(0, 1.0)
@@ -57,7 +57,7 @@ def test_lookahead2():
     net.fc.weight.data.normal_(0.0, 1.0)
     net.fc.bias.data.fill_(0.0)
 
-    pred = Prediction(net.parameters())
+    pred = PredOpt(net.parameters())
 
     result1 = net(input)
 
