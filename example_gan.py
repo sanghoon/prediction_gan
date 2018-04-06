@@ -12,7 +12,7 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
-from modules import PredictionModule
+from modules import Prediction
 
 
 # Originally from https://github.com/pytorch/examples/blob/master/dcgan/main.py
@@ -208,7 +208,7 @@ if opt.cuda:
 
 if opt.pred:
     print('Prediction of G is enabled (see https://openreview.net/forum?id=Skj8Kag0Z&noteId=rkLymJTSf)')
-    netG_prime = PredictionModule(netG)
+    netG_prime = Prediction(netG)
 
 
 fixed_noise = Variable(fixed_noise)
@@ -274,7 +274,7 @@ for epoch in range(opt.niter):
         optimizerG.step()
 
         if opt.pred:
-            netG_prime.step(step=2.0)
+            netG_prime.predict_step(step=2.0)
             pass
 
         print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f D(x): %.4f D(G(z)): %.4f / %.4f'
