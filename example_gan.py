@@ -206,16 +206,16 @@ if opt.cuda:
     input, label = input.cuda(), label.cuda()
     noise, fixed_noise = noise.cuda(), fixed_noise.cuda()
 
-if opt.pred:
-    print('Prediction of G is enabled (see https://openreview.net/forum?id=Skj8Kag0Z&noteId=rkLymJTSf)')
-    netG_prime = Prediction(netG)
-
-
 fixed_noise = Variable(fixed_noise)
 
 # setup optimizer
 optimizerD = optim.Adam(netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
 optimizerG = optim.Adam(netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+
+if opt.pred:
+    print('Prediction of G is enabled (see https://openreview.net/forum?id=Skj8Kag0Z&noteId=rkLymJTSf)')
+    optimizer_pred = Prediction(netG.parameters())
+
 
 for epoch in range(opt.niter):
     for i, data in enumerate(dataloader, 0):
@@ -244,7 +244,8 @@ for epoch in range(opt.niter):
 
         if opt.pred:
             # Get samples from netG_prime (G w/ prediction)
-            fake = netG_prime(noisev)
+            with optimizer_pred.lookahead(step=1.0):
+                fake = netG(noisev)
         else:
             # Directly generated from G
             fake = netG(noisev)
@@ -264,7 +265,7 @@ for epoch in range(opt.niter):
         labelv = Variable(label.fill_(real_label))  # fake labels are real for generator cost
 
         if opt.pred:
-            # Generate fake samples from G (w/o prediction) for G training
+            # Re-generate fake samples (w/o prediction) for G training
             fake = netG(noisev)
 
         output = netD(fake)
@@ -274,8 +275,7 @@ for epoch in range(opt.niter):
         optimizerG.step()
 
         if opt.pred:
-            netG_prime.predict_step(step=2.0)
-            pass
+            optimizer_pred.step()
 
         print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f D(x): %.4f D(G(z)): %.4f / %.4f'
               % (epoch, opt.niter, i, len(dataloader),
