@@ -44,27 +44,28 @@ However, this impl. is compatible with **any optimizers** while the author's one
     optim_D = optim.Adam(netD.parameters(), lr=0.01)
     
     pred_G = PredOpt(netG.parameters())             # Create an prediction optimizer with target parameters
+    pred_D = PredOpt(netD.parameters())
     
     
     for i, data in enumerate(dataloader, 0):
         # (1) Training D with samples from predicted generator
-    
         with pred_G.lookahead(step=1.0):            # in the 'with' block, the model works as a 'predicted' model
             fake_predicted = netG(Z)                           
         
-        # Compute loss 
+            # Compute gradients and loss 
         
-        optim_D.step()
+            optim_D.step()
         
         
-        # (2) Training G
+        # (2) Training G        
+        with pred_D.lookahead(step=1.0:)
+            fake = netG(Z)                          # Draw samples from the real model. (not predicted one)
+            D_outs = netD(fake)
+    
+            # Compute gradients and loss
         
-        fake = netG(Z)                              # Draw samples from the real model. (not predicted one)
-            
-        # Compute loss
-        
-        optim_G.step()
-        pred_G.step()                               # You should call PredOpt.step() after each update
+            optim_G.step()
+            pred_G.step()                           # You should call PredOpt.step() after each update
     ``` 
     
 ### Output samples w/ large learning rate (0.01)

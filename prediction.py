@@ -27,6 +27,11 @@ class PredOpt(optim.Optimizer):
 
     @contextmanager
     def lookahead(self, step=1.0):
+        # Do nothing if lookahead stepsize is 0.0
+        if step == 0.0:
+            yield
+            return
+
         for i, _cur_param in enumerate(self._params):
             # Integrity check (whether we have the latest copy of parameters)
             if torch.sum(_cur_param.data[:] != self._prev_params[i].data[:]) > 0:

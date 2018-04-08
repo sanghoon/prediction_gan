@@ -212,9 +212,15 @@ fixed_noise = Variable(fixed_noise)
 optimizerD = optim.Adam(netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
 optimizerG = optim.Adam(netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
 
+optimizer_predD = PredOpt(netD.parameters())
+optimizer_predG = PredOpt(netG.parameters())
+
+
 if opt.pred:
-    print('Prediction of G is enabled (see https://openreview.net/forum?id=Skj8Kag0Z&noteId=rkLymJTSf)')
-    optimizer_pred = PredOpt(netG.parameters())
+    print('Prediction of D and G is enabled (see https://openreview.net/forum?id=Skj8Kag0Z&noteId=rkLymJTSf)')
+    lookahead_step = 1.0
+else:
+    lookahead_step = 0.0
 
 
 for epoch in range(opt.niter):
@@ -242,21 +248,18 @@ for epoch in range(opt.niter):
         noise.resize_(batch_size, nz, 1, 1).normal_(0, 1)
         noisev = Variable(noise)
 
-        if opt.pred:
-            # Get samples from netG_prime (G w/ prediction)
-            with optimizer_pred.lookahead(step=1.0):
-                fake = netG(noisev)
-        else:
-            # Directly generated from G
+        # Compute gradient of D w/ predicted G
+        with optimizer_predG.lookahead(step=lookahead_step):
             fake = netG(noisev)
+            labelv = Variable(label.fill_(fake_label))
+            output = netD(fake.detach())
+            errD_fake = criterion(output, labelv)
+            errD_fake.backward()                    # Compute gradient
 
-        labelv = Variable(label.fill_(fake_label))
-        output = netD(fake.detach())
-        errD_fake = criterion(output, labelv)
-        errD_fake.backward()
-        D_G_z1 = output.data.mean()
-        errD = errD_real + errD_fake
-        optimizerD.step()
+            D_G_z1 = output.data.mean()
+            errD = errD_real + errD_fake
+            optimizerD.step()
+            optimizer_predD.step()
 
         ############################
         # (2) Update G network: maximize log(D(G(z)))
@@ -264,18 +267,16 @@ for epoch in range(opt.niter):
         netG.zero_grad()
         labelv = Variable(label.fill_(real_label))  # fake labels are real for generator cost
 
-        if opt.pred:
-            # Re-generate fake samples (w/o prediction) for G training
-            fake = netG(noisev)
+        # Compute gradient of G w/ predicted D
+        with optimizer_predD.lookahead(step=lookahead_step):
+            fake = netG(noisev)             # Re-generate fake samples (w/o prediction) for G training
+            output = netD(fake)
+            errG = criterion(output, labelv)
+            errG.backward()
 
-        output = netD(fake)
-        errG = criterion(output, labelv)
-        errG.backward()
-        D_G_z2 = output.data.mean()
-        optimizerG.step()
-
-        if opt.pred:
-            optimizer_pred.step()
+            D_G_z2 = output.data.mean()
+            optimizerG.step()
+            optimizer_predG.step()
 
         print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f D(x): %.4f D(G(z)): %.4f / %.4f'
               % (epoch, opt.niter, i, len(dataloader),
