@@ -67,9 +67,29 @@ However, this impl. is compatible with **any optimizers** while the author's one
         pred_G.step()                               # You should call PredOpt.step() after each update
     ``` 
     
-    
- ### TODOs
+### Output samples w/ large learning rate (0.01)
+#### Cifar-10
+
+You can find more images at https://github.com/sanghoon/prediction_gan/issues/1
+
+##### Vanilla DCGAN
+![ep25_cifar_base_lr 0 01](https://user-images.githubusercontent.com/3340388/38464108-fd288880-3b42-11e8-8392-7ac9d4261077.png)
+##### DCGAN w/ prediction (step=1.0)
+![ep25_cifar_pred_lr 0 01](https://user-images.githubusercontent.com/3340388/38464113-042961e0-3b43-11e8-85f4-a6827d95344d.png)
+ 
+#### CelebA (50k images only)
+
+You can find more images at https://github.com/sanghoon/prediction_gan/issues/2
+
+##### Vanilla DCGAN
+![ep25_celeba_base_lr 0 01](https://user-images.githubusercontent.com/3340388/38464191-43ed0b3c-3b44-11e8-934e-2914a7b581a0.png)
+##### DCGAN w/ prediction (step=1.0)
+![ep25_celeba_pred_lr 0 01](https://user-images.githubusercontent.com/3340388/38464196-51cbc860-3b44-11e8-867c-a285afdd0a6f.png)
+
+
+#####
+### TODOs
  
  - [x] : Impl. as an optimizer
  - [ ] : Support pip install
- - [ ] : Add some experimental results 
+ - [x] : Add some experimental results 
