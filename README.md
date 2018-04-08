@@ -1,12 +1,14 @@
-# Prediction Optimizer
+# Prediction Optimizer (to stabilize GAN training)
 PyTorch Impl. of https://openreview.net/pdf?id=Skj8Kag0Z
+
 
 ### Introduction
 This is a PyTorch implementation of the 'prediction method' introduced in the following paper ...
 
 - Abhay Yadav et al., Stabilizing Adversarial Nets with Prediction Methods, ICLR 2018, [Link](https://openreview.net/forum?id=Skj8Kag0Z&noteId=rkLymJTSf)
 
-You can also find the author's impl. at https://github.com/shahsohil/stableGAN (currently only for Adam optimizer)
+You can also find one of the author's original impl. at https://github.com/shahsohil/stableGAN .
+However, this impl. is compatible with **any optimizers** while the author's one only supports ADAM optimizer.
 
 
 ### How-to-use
@@ -17,6 +19,7 @@ You can also find the author's impl. at https://github.com/shahsohil/stableGAN (
   - Initialize just like an optimizer
     - `pred = PredOpt(net.parameters())`
   - Run the model in a 'with' block to get results from a model with predicted params.
+    - With 'step' argument, you can control lookahead step size (1.0 by default)
     - ```python
       with pred.lookahead(step=1.0):
           output = net(input)
@@ -67,6 +70,6 @@ You can also find the author's impl. at https://github.com/shahsohil/stableGAN (
     
  ### TODOs
  
- - [ ] : Impl. as an optimizer
+ - [x] : Impl. as an optimizer
  - [ ] : Support pip install
- - [ ] : Add some experiemntal results 
+ - [ ] : Add some experimental results 

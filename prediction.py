@@ -4,7 +4,7 @@ import torch.optim as optim
 import copy
 from contextlib import contextmanager
 
-# TODO: impl. w contextmanager
+
 class PredOpt(optim.Optimizer):
     def __init__(self, params):
         super(optim.Optimizer, self).__init__()
@@ -28,9 +28,9 @@ class PredOpt(optim.Optimizer):
     @contextmanager
     def lookahead(self, step=1.0):
         for i, _cur_param in enumerate(self._params):
-            # Parameters are the same with the stored ones
+            # Integrity check (whether we have the latest copy of parameters)
             if torch.sum(_cur_param.data[:] != self._prev_params[i].data[:]) > 0:
-                raise RuntimeWarning("Stored parameters differ from current parameters. Call step() after param. updates")
+                raise RuntimeWarning("Stored parameters differ from the current ones. Call step() after parameter updates")
 
             _cur_param.data[:] += step * self._diff_params[i].data[:]
 

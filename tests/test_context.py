@@ -16,7 +16,33 @@ class MockNet(nn.Module):
         return x
 
 
-def test_lookahead():
+def test_param_update():
+    net = MockNet()
+
+    net.fc.weight.data.fill_(0.0)
+    net.fc.bias.data.fill_(0.0)
+
+    pred = PredOpt(net.parameters())
+
+    # Update weights
+    net.fc.weight.data.fill_(1.0)                   # 0.0 => 1.0    (Increased by 1.0)
+    net.fc.bias.data.fill_(0.5)                     # 0.0 => 0.5    (Increased by 0.5)
+
+    pred.step()
+
+    with pred.lookahead(1.0):
+        assert (net.fc.weight.data[0,0] == 2.0)     # 1.0 + 1.0 * 1.0
+        assert (net.fc.bias.data[0] == 1.0)         # 0.5 + 0.5 * 1.0
+
+    assert(net.fc.weight.data[1,1] == 1.0)          # Went back to the correct value (1.0)
+    assert(net.fc.bias.data[1] == 0.5)              # Went back to the correct value (1.0)
+
+    with pred.lookahead(5.0):
+        assert (net.fc.weight.data[2,2] == 6.0)     # 1.0 + 1.0 * 5.0
+        assert (net.fc.bias.data[2] == 3.0)         # 0.5 + 0.5 * 5.0
+
+
+def test_lookahead_pred():
     net = MockNet()
 
     input = Variable(torch.randn((5, 3)))
@@ -48,7 +74,7 @@ def test_lookahead():
     assert (np.all(np.isclose(result1.data.numpy(), result4.data.numpy())))
 
 
-def test_lookahead2():
+def test_lookahead_pred2():
     net = MockNet()
 
     input = Variable(torch.randn((5, 3)))
@@ -68,5 +94,6 @@ def test_lookahead2():
 
 
 if __name__ == "__main__":
-    test_lookahead()
-    test_lookahead2()
+    test_param_update()
+    test_lookahead_pred()
+    test_lookahead_pred2()
