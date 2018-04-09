@@ -69,8 +69,9 @@ However, this impl. is compatible with **any optimizers** while the author's one
     ``` 
     
 ### Output samples
-#### Training w/ large learning rate (0.01)
 You can find more images at https://github.com/sanghoon/prediction_gan/issues/3 and https://github.com/sanghoon/prediction_gan/issues/4
+
+#### Training w/ large learning rate (0.01)
 
 | Vanilla DCGAN | DCGAN w/ prediction (step=1.0) |
 | --- | --- |
