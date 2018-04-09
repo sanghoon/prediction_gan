@@ -68,31 +68,29 @@ However, this impl. is compatible with **any optimizers** while the author's one
             pred_G.step()                           # You should call PredOpt.step() after each update
     ``` 
     
-### Output samples w/ large learning rate (0.01)
-#### Cifar-10
+### Output samples
+#### Training w/ large learning rate (0.01)
+You can find more images at https://github.com/sanghoon/prediction_gan/issues/3 and https://github.com/sanghoon/prediction_gan/issues/4
 
-You can find more images at https://github.com/sanghoon/prediction_gan/issues/1
+| Vanilla DCGAN | DCGAN w/ prediction (step=1.0) |
+| --- | --- |
+| ![ep25_cifar_base_lr 0 01](https://user-images.githubusercontent.com/3340388/38464108-fd288880-3b42-11e8-8392-7ac9d4261077.png) | ![ep25_cifar_pred_lr 0 01](https://user-images.githubusercontent.com/3340388/38499679-51c0e18e-3c43-11e8-9287-38f780db933c.png) |
+| ![ep25_celeba_base_lr 0 01](https://user-images.githubusercontent.com/3340388/38464191-43ed0b3c-3b44-11e8-934e-2914a7b581a0.png) | ![ep25_celeba_pred_lr 0 01](https://user-images.githubusercontent.com/3340388/38499902-ecb3f30c-3c43-11e8-958b-a1b4e2aa6531.png) |
 
-##### Vanilla DCGAN
-![ep25_cifar_base_lr 0 01](https://user-images.githubusercontent.com/3340388/38464108-fd288880-3b42-11e8-8392-7ac9d4261077.png)
-##### DCGAN w/ prediction (step=1.0)
-**Wrong results. To be updated**
+#### Training w/ medium learning rate (1e-4)
+| Vanilla DCGAN | DCGAN w/ prediction (step=1.0) |
+| --- | --- |
+| ![ep25_cifar_base_lr 0 0001](https://user-images.githubusercontent.com/3340388/38464133-4e402fb6-3b43-11e8-9631-3d20e033a4d1.png) | ![ep25_cifar_pred_lr 0 0001](https://user-images.githubusercontent.com/3340388/38499708-64acd58c-3c43-11e8-8939-3d97f1ca5cb9.png) |
+| ![ep25_celeba_base_lr 0 0001](https://user-images.githubusercontent.com/3340388/38464203-60690aae-3b44-11e8-855b-afd0f06d0abc.png) | ![ep25_celeba_pred_lr 0 0001](https://user-images.githubusercontent.com/3340388/38499884-dfa48b7c-3c43-11e8-8f90-0b7cac45c771.png) |
 
-![ep25_cifar_pred_lr 0 01](https://user-images.githubusercontent.com/3340388/38464113-042961e0-3b43-11e8-85f4-a6827d95344d.png)
+#### Training w/ small learning rate (1e-5)
+
+| Vanilla DCGAN | DCGAN w/ prediction (step=1.0) |
+| --- | --- |
+| ![ep25_cifar_base_lr 0 00001](https://user-images.githubusercontent.com/3340388/38464153-852f2e64-3b43-11e8-937e-aa463b372291.png) | ![ep25_cifar_pred_lr 0 00001](https://user-images.githubusercontent.com/3340388/38499728-737c0de4-3c43-11e8-8c14-6b69e30e7f19.png) |
+| ![ep25_celeba_base_lr 0 00001](https://user-images.githubusercontent.com/3340388/38464218-8eb51894-3b44-11e8-9839-1a259a82748a.png) | ![ep25_celeba_pred_lr 0 00001](https://user-images.githubusercontent.com/3340388/38499853-cf520466-3c43-11e8-8d4c-28adfd6d57dc.png) |
+
  
-#### CelebA (50k images only)
-
-You can find more images at https://github.com/sanghoon/prediction_gan/issues/2
-
-##### Vanilla DCGAN
-![ep25_celeba_base_lr 0 01](https://user-images.githubusercontent.com/3340388/38464191-43ed0b3c-3b44-11e8-934e-2914a7b581a0.png)
-##### DCGAN w/ prediction (step=1.0)
-**Wrong results. To be updated**
-
-![ep25_celeba_pred_lr 0 01](https://user-images.githubusercontent.com/3340388/38464196-51cbc860-3b44-11e8-867c-a285afdd0a6f.png)
-
-
-#####
 ### TODOs
  
  - [x] : Impl. as an optimizer
