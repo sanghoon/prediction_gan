@@ -1,14 +1,13 @@
 # Prediction Optimizer (to stabilize GAN training)
-PyTorch Impl. of https://openreview.net/pdf?id=Skj8Kag0Z
-
 
 ### Introduction
-This is a PyTorch implementation of the 'prediction method' introduced in the following paper ...
+This is a PyTorch implementation of 'prediction method' introduced in the following paper ...
 
 - Abhay Yadav et al., Stabilizing Adversarial Nets with Prediction Methods, ICLR 2018, [Link](https://openreview.net/forum?id=Skj8Kag0Z&noteId=rkLymJTSf)
 
-You can also find one of the author's original impl. at https://github.com/shahsohil/stableGAN .
-However, this impl. is compatible with **any optimizers** while the author's one only supports ADAM optimizer.
+The authors proposed a simple (but effective) method to stabilize GAN trainings. With this Prediction Optimizer, you can easily apply the method to your existing GAN codes. This impl. is compatible with **most of PyTorch optimizers and network structures**. (Please let me know if you have any issues using this)
+
+You can also find one of the author's original impl. at https://github.com/shahsohil/stableGAN (currently supports ADAM only).
 
 
 ### How-to-use
@@ -58,8 +57,8 @@ However, this impl. is compatible with **any optimizers** while the author's one
         
         
         # (2) Training G        
-        with pred_D.lookahead(step=1.0:)
-            fake = netG(Z)                          # Draw samples from the real model. (not predicted one)
+        with pred_D.lookahead(step=1.0:)            # 'Predicted D'
+            fake = netG(Z)                          # Draw samples from the real model. (not predicted one)
             D_outs = netD(fake)
     
             # Compute gradients and loss
