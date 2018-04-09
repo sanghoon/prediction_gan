@@ -7,8 +7,6 @@ This is a PyTorch implementation of 'prediction method' introduced in the follow
 
 The authors proposed a simple (but effective) method to stabilize GAN trainings. With this Prediction Optimizer, you can easily apply the method to your existing GAN codes. This impl. is compatible with **most of PyTorch optimizers and network structures**. (Please let me know if you have any issues using this)
 
-You can also find one of the author's original impl. at https://github.com/shahsohil/stableGAN (currently supports ADAM only).
-
 
 ### How-to-use
 
@@ -89,6 +87,15 @@ You can find more images at https://github.com/sanghoon/prediction_gan/issues/3 
 | --- | --- |
 | ![ep25_cifar_base_lr 0 00001](https://user-images.githubusercontent.com/3340388/38464153-852f2e64-3b43-11e8-937e-aa463b372291.png) | ![ep25_cifar_pred_lr 0 00001](https://user-images.githubusercontent.com/3340388/38499728-737c0de4-3c43-11e8-8c14-6b69e30e7f19.png) |
 | ![ep25_celeba_base_lr 0 00001](https://user-images.githubusercontent.com/3340388/38464218-8eb51894-3b44-11e8-9839-1a259a82748a.png) | ![ep25_celeba_pred_lr 0 00001](https://user-images.githubusercontent.com/3340388/38499853-cf520466-3c43-11e8-8d4c-28adfd6d57dc.png) |
+
+
+### External links
+
+- GitHub repo. mentioned in the paper (https://github.com/jaiabhayk/stableGAN)
+  - Empty by the date of this README.md update.
+- Another impl. for PyTorch (https://github.com/shahsohil/stableGAN)
+  - From the name of the repository owner, I guess it's written by one of the paper authors. (not 100% sure)
+  - Currently supports ADAM only.
 
  
 ### TODOs
