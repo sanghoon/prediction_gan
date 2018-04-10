@@ -4,6 +4,7 @@
 This is a PyTorch implementation of 'prediction method' introduced in the following paper ...
 
 - Abhay Yadav et al., Stabilizing Adversarial Nets with Prediction Methods, ICLR 2018, [Link](https://openreview.net/forum?id=Skj8Kag0Z&noteId=rkLymJTSf)
+- (*Just for clarification, I'm not an author of the paper.*)
 
 The authors proposed a simple (but effective) method to stabilize GAN trainings. With this Prediction Optimizer, you can easily apply the method to your existing GAN codes. This impl. is compatible with **most of PyTorch optimizers and network structures**. (Please let me know if you have any issues using this)
 
