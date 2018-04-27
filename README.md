@@ -67,7 +67,11 @@ The authors proposed a simple (but effective) method to stabilize GAN trainings.
     ``` 
     
 ### Output samples
-You can find more images at https://github.com/sanghoon/prediction_gan/issues/3 and https://github.com/sanghoon/prediction_gan/issues/4
+You can find more images at the following issues.
+- [Cifar-10 (Prediction of G only)](https://github.com/sanghoon/prediction_gan/issues/1)
+- [CelebA (Prediction of G only)](https://github.com/sanghoon/prediction_gan/issues/2)
+- [Cifar-10 (Prediction of both D and G)](https://github.com/sanghoon/prediction_gan/issues/3)
+- [CelebA (Prediction of both D and G)](https://github.com/sanghoon/prediction_gan/issues/4)
 
 #### Training w/ large learning rate (0.01)
 
