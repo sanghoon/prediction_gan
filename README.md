@@ -53,15 +53,15 @@ The authors proposed a simple (but effective) method to stabilize GAN trainings.
             # Compute gradients and loss 
         
             optim_D.step()
+            pred_D.step()
         
-        
-        # (2) Training G        
-        with pred_D.lookahead(step=1.0:)            # 'Predicted D'
-            fake = netG(Z)                          # Draw samples from the real model. (not predicted one)
+        # (2) Training G
+        with pred_D.lookahead(step=1.0:)            # 'Predicted D'
+            fake = netG(Z)                          # Draw samples from the real model. (not predicted one)
             D_outs = netD(fake)
-    
+
             # Compute gradients and loss
-        
+
             optim_G.step()
             pred_G.step()                           # You should call PredOpt.step() after each update
     ``` 
